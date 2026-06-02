@@ -1,3 +1,4 @@
+#include <cstdio>
 #include "pico/stdlib.h"
 #include "hardware/pio.h"
 
@@ -10,10 +11,11 @@
 int main()
 {
     stdio_init_all();
+    // sleep_ms(1000);
 
-    gpio_init(SWITCH_PIN);
-    gpio_set_dir(SWITCH_PIN, GPIO_IN);
-    gpio_pull_up(SWITCH_PIN);
+    // gpio_init(SWITCH_PIN);
+    // gpio_set_dir(SWITCH_PIN, GPIO_IN);
+    // gpio_pull_up(SWITCH_PIN);
 
     LightSensor lightSensor;
     lightSensor.init();
@@ -28,14 +30,9 @@ int main()
     brightSensor.init();
 
     LedController leds;
-
-    leds.init(
-        pio0,
-        WS2812_PIN,
-        WS2812_COUNT);
+    leds.init(pio0, WS2812_PIN, WS2812_COUNT);
 
     int brightnessMode = 3;
-
     const float brightnesses[] =
     {
         0.25f,
@@ -44,64 +41,45 @@ int main()
         1.00f
     };
 
-    leds.setBrightness(
-        brightnesses[brightnessMode]);
-
     int colorMode = 0;
-
-    leds.setMode(
-        static_cast<ColorMode>(colorMode));
+    leds.setMode(static_cast<ColorMode>(colorMode));
+    leds.setBrightness(brightnesses[brightnessMode]);
 
     while (true)
     {
         if (gpio_get(SWITCH_PIN))
         {
+            servo.update();
+            leds.update();
             sleep_ms(20);
             continue;
         }
 
-        // -------- Фоторезистор -> сервопривод --------
-
         uint16_t light = lightSensor.read();
 
-        float targetAngle =
-            light * 180.0f / 4095.0f;
-
+        float targetAngle = light * 45.0f / 4095.0f;
         servo.setTarget(targetAngle);
         servo.update();
 
-        // -------- Ультразвуковые датчики --------
+        float currentAngle = servo.getCurrentAngle();
+        leds.setBrightnessFromServo(currentAngle);
 
         modeSensor.update();
         brightSensor.update();
 
-        // Смена цветового режима
-
         if (modeSensor.gestureDetected(DETECT_DISTANCE_CM))
         {
-            colorMode =
-                (colorMode + 1) %
-                COLOR_MODE_COUNT;
-
-            leds.setMode(
-                static_cast<ColorMode>(colorMode));
+            colorMode = (colorMode + 1) % COLOR_MODE_COUNT;
+            leds.setMode(static_cast<ColorMode>(colorMode));
         }
-
-        // Смена яркости
 
         if (brightSensor.gestureDetected(DETECT_DISTANCE_CM))
         {
-            brightnessMode =
-                (brightnessMode + 1) % 4;
-
-            leds.setBrightness(
-                brightnesses[brightnessMode]);
+            brightnessMode = (brightnessMode + 1) % 4;
+            leds.setBrightness(brightnesses[brightnessMode]);
         }
 
-        // -------- Светодиодная лента --------
-
         leds.update();
-
         sleep_ms(20);
     }
 

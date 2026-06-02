@@ -11,6 +11,7 @@ public:
 
     float getAngle() const;
 
+    float getCurrentAngle() const;
 private:
     unsigned pin_;
 

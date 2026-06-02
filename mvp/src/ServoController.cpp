@@ -1,5 +1,5 @@
 #include "ServoController.h"
-
+#include <stdint.h>
 #include "hardware/pwm.h"
 #include "hardware/gpio.h"
 
@@ -13,7 +13,9 @@ void ServoController::init(unsigned pin)
 
     pwm_config cfg = pwm_get_default_config();
 
-    pwm_config_set_clkdiv(&cfg, 64.0f);
+    pwm_config_set_clkdiv(&cfg, 125.0f);
+
+    pwm_config_set_wrap(&cfg, 20000);
 
     pwm_init(slice, &cfg, true);
 
@@ -25,13 +27,18 @@ void ServoController::setTarget(float angle)
     if(angle < 0.0f)
         angle = 0.0f;
 
-    if(angle > 180.0f)
-        angle = 180.0f;
+    if(angle > 45.0f)
+        angle = 45.0f;
 
     targetAngle_ = angle;
 }
 
 float ServoController::getAngle() const
+{
+    return currentAngle_;
+}
+
+float ServoController::getCurrentAngle() const
 {
     return currentAngle_;
 }
@@ -45,9 +52,10 @@ void ServoController::update()
 
 void ServoController::writeAngle(float angle)
 {
-    float pulse_us = 500.0f + angle * (2000.0f / 180.0f);
+    float min_pulse_us = 500.0f;
+    float max_pulse_us = 2500.0f;
 
-    uint32_t level = static_cast<uint32_t>(pulse_us * 65535.0f / 20000.0f);
+    float pulse_us = min_pulse_us + (angle / 180.0f) * (max_pulse_us - min_pulse_us);
 
-    pwm_set_gpio_level(pin_, level);
+    pwm_set_gpio_level(pin_, static_cast<uint32_t>(pulse_us));
 }

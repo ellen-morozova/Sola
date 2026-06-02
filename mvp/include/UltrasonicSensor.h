@@ -1,5 +1,5 @@
 #pragma once
-
+#include <stdint.h>
 #include "pico/stdlib.h"
 
 class UltrasonicSensor

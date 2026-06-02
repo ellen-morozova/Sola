@@ -27,6 +27,9 @@ target_link_libraries(
     hardware_clocks
 )
 
+pico_enable_stdio_usb(full_pico_smart_light 1)
+pico_enable_stdio_uart(full_pico_smart_light 0)
+
 pico_generate_pio_header(
     full_pico_smart_light
     ${CMAKE_CURRENT_LIST_DIR}/ws2812.pio
