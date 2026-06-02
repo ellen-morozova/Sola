@@ -1,7 +1,7 @@
 #include "pico/stdlib.h"
 #include "hardware/gpio.h"
 
-const uint LED_PIN = 25;
+const uint8_t LED_PIN = 25;
 
 int main() {
     gpio_init(LED_PIN);
