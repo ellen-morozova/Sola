@@ -33,7 +33,7 @@ int main()
     leds1.init(pio0, WS2812_PIN1, WS2812_COUNT1, (uint32_t)1);
 
     LedController leds2;
-    leds2.init(pio0, WS2812_PIN2, WS2812_COUNT2, (uint32_t)1);
+    leds2.init(pio0, WS2812_PIN2, WS2812_COUNT2, (uint32_t)2);
 
     int brightnessMode = 3;
     const float brightnesses[] =
@@ -87,8 +87,8 @@ int main()
             leds2.setBrightness(brightnesses[brightnessMode]);
         }
 
-        leds1.update();
-        leds2.update();
+        leds1.update1();
+        leds2.update2();
         sleep_ms(20);
     }
 

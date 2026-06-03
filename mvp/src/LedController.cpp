@@ -313,134 +313,133 @@ void LedController::showRandomPalette(const std::vector<LedColor>& palette)
     }
 }
 
-void LedController::update()
+void LedController::showColorWave(const LedColor& color1, const LedColor& color2)
 {
-    if (type_ == (uint32_t)1) {
-        switch (mode_)
-        {
-            case ColorMode::RED:
-                fill(255, 0, 0);
-                break;
+    static uint32_t waveOffset = 0;
 
-            case ColorMode::GREEN:
-                fill(0, 255, 0);
-                break;
-
-            case ColorMode::BLUE:
-                fill(0, 0, 255);
-                break;
-
-            case ColorMode::RAINBOW:
-                showRainbow();
-                break;
-
-            case ColorMode::FIRE:
-                showFire();
-                break;
-
-            case ColorMode::POLICE:
-                showPolice();
-                break;
-
-            case ColorMode::BREATHING:
-                showBreathing();
-                break;
-            
-            case ColorMode::PINKTOPURPLE:
-                showTwoColorTransition({255, 56, 183}, {163, 33, 255});
-                break;
-            
-            case ColorMode::ORANGETOBLUE:
-                showTwoColorTransition({255, 139, 33}, {33, 186, 255});
-                break;
-            
-            case ColorMode::BLUETOGREEN:
-                showTwoColorTransition({5, 98, 255}, {33, 255, 211});
-                break;
-            
-            case ColorMode::PINKTOBLUETOORANGE:
-                showThreeColorTransition({255, 18, 176}, {15, 196, 255}, {255, 171, 43});
-                break;
-            
-            case ColorMode::SUN:
-                showRandomPalette({{240, 171, 22}, {232, 79, 2}, {230, 61, 18}, {247, 29, 0}, {247, 0, 0}, {255, 201, 5}});
-                break;
-            
-            case ColorMode::STROBERRY:
-                showRandomPalette({{255, 155, 5}, {255, 41, 41}, {255, 0, 111}, {231, 45, 237}});
-                break;
-            
-            case ColorMode::NIGHTSKY:
-                showRandomPalette({{39, 6, 201}, {31, 120, 255}, {98, 0, 255}, {18, 188, 255}});
-                break;
-            
-            case ColorMode::LEMON:
-                showRandomPalette({{195, 255, 0}, {117, 255, 43}, {0, 219, 22}});
-                break;
-        }
+    for (uint32_t i = 0; i < ledCount_; i++)
+    {
+        float phase = 0.2f * 3.1415926f * (float)(i + waveOffset) / (float)ledCount_;
+        float t = (sinf(phase) + 1.0f) * 0.5f;
+        uint8_t r = lerp8(color1.r, color2.r, t);
+        uint8_t g = lerp8(color1.g, color2.g, t);
+        uint8_t b = lerp8(color1.b, color2.b, t);
+        putPixel(rgb(r, g, b));
     }
-    else {
-        switch (mode_)
-        {
-            case ColorMode::RED:
-                fill(255, 0, 0);
-                break;
+    waveOffset++;
+}
 
-            case ColorMode::GREEN:
-                fill(0, 255, 0);
-                break;
+void LedController::update1()
+{
+    switch (mode_)
+    {
+        case ColorMode::GENERAL:
+            showColorWave({147, 64, 255}, {255, 0, 93});
+            break;
 
-            case ColorMode::BLUE:
-                fill(0, 0, 255);
-                break;
+        case ColorMode::MODE2:
+            showRandomPalette({{255, 240, 110}, {255, 200, 61}});
+            break;
 
-            case ColorMode::RAINBOW:
-                showRainbow();
-                break;
+        case ColorMode::RAINBOW:
+            showRainbow();
+            break;
 
-            case ColorMode::FIRE:
-                showFire();
-                break;
+        case ColorMode::FIRE:
+            showFire();
+            break;
 
-            case ColorMode::POLICE:
-                showPolice();
-                break;
+        case ColorMode::BREATHING:
+            showBreathing();
+            break;
+        
+        case ColorMode::PINKTOPURPLE:
+            showTwoColorTransition({255, 56, 183}, {163, 33, 255});
+            break;
+        
+        case ColorMode::ORANGETOBLUE:
+            showTwoColorTransition({255, 139, 33}, {33, 186, 255});
+            break;
+        
+        case ColorMode::BLUETOGREEN:
+            showTwoColorTransition({5, 98, 255}, {33, 255, 211});
+            break;
+        
+        case ColorMode::PINKTOBLUETOORANGE:
+            showThreeColorTransition({255, 156, 237}, {172, 242, 252}, {255, 211, 143});
+            break;
+        
+        case ColorMode::SUN:
+            showRandomPalette({{240, 171, 22}, {232, 79, 2}, {230, 61, 18}, {247, 29, 0}, {247, 0, 0}, {255, 201, 5}});
+            break;
+        
+        case ColorMode::STROBERRY:
+            showRandomPalette({{255, 155, 5}, {255, 41, 41}, {255, 0, 111}, {231, 45, 237}});
+            break;
+        
+        case ColorMode::NIGHTSKY:
+            showRandomPalette({{39, 6, 201}, {31, 120, 255}, {98, 0, 255}, {18, 188, 255}});
+            break;
+        
+        case ColorMode::LEMON:
+            showRandomPalette({{195, 255, 0}, {117, 255, 43}, {0, 219, 22}});
+            break;
+    }
+}
+void LedController::update2() 
+{
+    switch (mode_)
+    {
+        case ColorMode::GENERAL:
+            showColorWave({255, 166, 0}, {255, 215, 140});
+            break;
 
-            case ColorMode::BREATHING:
-                showBreathing();
-                break;
-            
-            case ColorMode::PINKTOPURPLE:
-                showTwoColorTransition({255, 56, 183}, {163, 33, 255});
-                break;
-            
-            case ColorMode::ORANGETOBLUE:
-                showTwoColorTransition({255, 139, 33}, {33, 186, 255});
-                break;
-            
-            case ColorMode::BLUETOGREEN:
-                showTwoColorTransition({5, 98, 255}, {33, 255, 211});
-                break;
-            
-            case ColorMode::PINKTOBLUETOORANGE:
-                showThreeColorTransition({255, 156, 237}, {172, 242, 252}, {255, 211, 143});
-                break;
-            
-            case ColorMode::SUN:
-                showRandomPalette({{240, 171, 22}, {232, 79, 2}, {230, 61, 18}, {247, 29, 0}, {247, 0, 0}, {255, 201, 5}});
-                break;
-            
-            case ColorMode::STROBERRY:
-                showRandomPalette({{255, 155, 5}, {255, 41, 41}, {255, 0, 111}, {231, 45, 237}});
-                break;
-            
-            case ColorMode::NIGHTSKY:
-                showRandomPalette({{39, 6, 201}, {31, 120, 255}, {98, 0, 255}, {18, 188, 255}});
-                break;
-            
-            case ColorMode::LEMON:
-                showRandomPalette({{195, 255, 0}, {117, 255, 43}, {0, 219, 22}});
-                break;
-        }
+        case ColorMode::MODE2:
+            showRandomPalette({{0, 255, 98}, {0, 76, 255}, {0, 213, 255}});
+            break;
+
+        case ColorMode::RAINBOW:
+            showRainbow();
+            break;
+
+        case ColorMode::FIRE:
+            showFire();
+            break;
+
+        case ColorMode::BREATHING:
+            showBreathing();
+            break;
+        
+        case ColorMode::PINKTOPURPLE:
+            showTwoColorTransition({255, 56, 183}, {163, 33, 255});
+            break;
+        
+        case ColorMode::ORANGETOBLUE:
+            showTwoColorTransition({255, 139, 33}, {33, 186, 255});
+            break;
+        
+        case ColorMode::BLUETOGREEN:
+            showTwoColorTransition({5, 98, 255}, {33, 255, 211});
+            break;
+        
+        case ColorMode::PINKTOBLUETOORANGE:
+            showThreeColorTransition({172, 242, 252}, {255, 211, 143}, {255, 156, 237});
+            break;
+        
+        case ColorMode::SUN:
+            showRandomPalette({{240, 171, 22}, {232, 79, 2}, {230, 61, 18}, {247, 29, 0}, {247, 0, 0}, {255, 201, 5}});
+            break;
+        
+        case ColorMode::STROBERRY:
+            showRandomPalette({{255, 155, 5}, {255, 41, 41}, {255, 0, 111}, {231, 45, 237}});
+            break;
+        
+        case ColorMode::NIGHTSKY:
+            showRandomPalette({{39, 6, 201}, {31, 120, 255}, {98, 0, 255}, {18, 188, 255}});
+            break;
+        
+        case ColorMode::LEMON:
+            showRandomPalette({{195, 255, 0}, {117, 255, 43}, {0, 219, 22}});
+            break;
     }
 }

@@ -6,12 +6,10 @@
 
 enum class ColorMode
 {
-    RED,
-    GREEN,
-    BLUE,
+    GENERAL,
+    MODE2,
     RAINBOW,
     FIRE,
-    POLICE,
     BREATHING,
     PINKTOPURPLE,
     ORANGETOBLUE,
@@ -20,7 +18,7 @@ enum class ColorMode
     SUN,
     STROBERRY,
     NIGHTSKY,
-    LEMON
+    LEMON,
 };
 
 class LedController
@@ -35,11 +33,13 @@ public:
     void showTwoColorTransition(const LedColor& color1, const LedColor& color2);
     void showThreeColorTransition(const LedColor& color1, const LedColor& color2, const LedColor& color3);
     void showRandomPalette(const std::vector<LedColor>& palette);
+    void showColorWave(const LedColor& color1, const LedColor& color2);
     void init(PIO pio, uint32_t pin, uint32_t ledCount, uint32_t type);
     void setMode(ColorMode mode);
     void setBrightness(float brightness);
     void setBrightnessFromServo(float angle);
-    void update();
+    void update1();
+    void update2();
 
 private:
     static uint8_t lerp8(uint8_t a, uint8_t b, float t);
@@ -52,7 +52,7 @@ private:
     unsigned int sm_;
     unsigned int pin_;
     unsigned int ledCount_;
-    ColorMode mode_ = ColorMode::RED;
+    ColorMode mode_ = ColorMode::GENERAL;
     float brightness_ = 1.0f;
     float targetBrightness_ = 1.0f; 
     uint32_t rainbowOffset_ = 0;

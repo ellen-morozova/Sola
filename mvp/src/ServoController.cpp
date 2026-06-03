@@ -43,7 +43,7 @@ float ServoController::getCurrentAngle() const
 
 void ServoController::update()
 {
-    currentAngle_ += (targetAngle_ - currentAngle_) * 0.05f;
+    currentAngle_ += (targetAngle_ - currentAngle_) * 0.02f;
 
     writeAngle(currentAngle_);
 }
