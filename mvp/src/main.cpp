@@ -29,8 +29,11 @@ int main()
     modeSensor.init();
     brightSensor.init();
 
-    LedController leds;
-    leds.init(pio0, WS2812_PIN, WS2812_COUNT);
+    LedController leds1;
+    leds1.init(pio0, WS2812_PIN1, WS2812_COUNT1, (uint32_t)1);
+
+    LedController leds2;
+    leds2.init(pio0, WS2812_PIN2, WS2812_COUNT2, (uint32_t)1);
 
     int brightnessMode = 3;
     const float brightnesses[] =
@@ -42,8 +45,10 @@ int main()
     };
 
     int colorMode = 0;
-    leds.setMode(static_cast<ColorMode>(colorMode));
-    leds.setBrightness(brightnesses[brightnessMode]);
+    leds1.setMode(static_cast<ColorMode>(colorMode));
+    leds1.setBrightness(brightnesses[brightnessMode]);
+    leds2.setMode(static_cast<ColorMode>(colorMode));
+    leds2.setBrightness(brightnesses[brightnessMode]);
 
     while (true)
     {
@@ -62,7 +67,8 @@ int main()
         servo.update();
 
         float currentAngle = servo.getCurrentAngle();
-        leds.setBrightnessFromServo(currentAngle);
+        leds1.setBrightnessFromServo(currentAngle);
+        leds2.setBrightnessFromServo(currentAngle);
 
         modeSensor.update();
         brightSensor.update();
@@ -70,16 +76,19 @@ int main()
         if (modeSensor.gestureDetected(DETECT_DISTANCE_CM))
         {
             colorMode = (colorMode + 1) % COLOR_MODE_COUNT;
-            leds.setMode(static_cast<ColorMode>(colorMode));
+            leds1.setMode(static_cast<ColorMode>(colorMode));
+            leds2.setMode(static_cast<ColorMode>(colorMode));
         }
 
         if (brightSensor.gestureDetected(DETECT_DISTANCE_CM))
         {
             brightnessMode = (brightnessMode + 1) % 4;
-            leds.setBrightness(brightnesses[brightnessMode]);
+            leds1.setBrightness(brightnesses[brightnessMode]);
+            leds2.setBrightness(brightnesses[brightnessMode]);
         }
 
-        leds.update();
+        leds1.update();
+        leds2.update();
         sleep_ms(20);
     }
 

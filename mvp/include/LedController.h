@@ -16,7 +16,6 @@ enum class ColorMode
     PINKTOPURPLE,
     ORANGETOBLUE,
     BLUETOGREEN,
-    DARKPINKTOBLUETOORANGE,
     PINKTOBLUETOORANGE,
     SUN,
     STROBERRY,
@@ -36,7 +35,7 @@ public:
     void showTwoColorTransition(const LedColor& color1, const LedColor& color2);
     void showThreeColorTransition(const LedColor& color1, const LedColor& color2, const LedColor& color3);
     void showRandomPalette(const std::vector<LedColor>& palette);
-    void init(PIO pio, uint32_t pin, uint32_t ledCount);
+    void init(PIO pio, uint32_t pin, uint32_t ledCount, uint32_t type);
     void setMode(ColorMode mode);
     void setBrightness(float brightness);
     void setBrightnessFromServo(float angle);
@@ -46,6 +45,7 @@ private:
     static uint8_t lerp8(uint8_t a, uint8_t b, float t);
     uint32_t transitionStartTime_ = 0;
     uint32_t randomUpdateTime_ = 0;
+    uint32_t type_ = 1;
     std::vector<LedColor> transitionColors_;
     std::vector<LedColor> randomColors_;
     PIO pio_;
