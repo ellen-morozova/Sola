@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include "hardware/pio.h"
+#include <vector>
 
 enum class ColorMode
 {
@@ -11,12 +12,30 @@ enum class ColorMode
     RAINBOW,
     FIRE,
     POLICE,
-    BREATHING
+    BREATHING,
+    PINKTOPURPLE,
+    ORANGETOBLUE,
+    BLUETOGREEN,
+    DARKPINKTOBLUETOORANGE,
+    PINKTOBLUETOORANGE,
+    SUN,
+    STROBERRY,
+    NIGHTSKY,
+    LEMON
 };
 
 class LedController
 {
 public:
+    struct LedColor
+    {
+        uint8_t r;
+        uint8_t g;
+        uint8_t b;
+    };
+    void showTwoColorTransition(const LedColor& color1, const LedColor& color2);
+    void showThreeColorTransition(const LedColor& color1, const LedColor& color2, const LedColor& color3);
+    void showRandomPalette(const std::vector<LedColor>& palette);
     void init(PIO pio, uint32_t pin, uint32_t ledCount);
     void setMode(ColorMode mode);
     void setBrightness(float brightness);
@@ -24,6 +43,11 @@ public:
     void update();
 
 private:
+    static uint8_t lerp8(uint8_t a, uint8_t b, float t);
+    uint32_t transitionStartTime_ = 0;
+    uint32_t randomUpdateTime_ = 0;
+    std::vector<LedColor> transitionColors_;
+    std::vector<LedColor> randomColors_;
     PIO pio_;
     unsigned int sm_;
     unsigned int pin_;

@@ -20,28 +20,18 @@ public:
     bool gestureDetected(float thresholdCm);
 
 private:
-    enum class State
-    {
-        IDLE,
-        TRIGGER_HIGH,
-        WAIT_RISE,
-        WAIT_FALL
-    };
-
     unsigned trig_;
     unsigned echo_;
-
-    State state_ = State::IDLE;
-
-    uint32_t stateStart_ = 0;
-    uint32_t echoStart_ = 0;
-
-    float distance_ = 0.0f;
 
     bool ready_ = false;
     bool error_ = false;
 
+    float distance_ = 0.0f;
+
     uint32_t lastGestureTime_ = 0;
 
+    bool gestureLatched_ = false;
+
     static constexpr uint32_t GESTURE_COOLDOWN_MS = 500;
+    static constexpr float HYSTERESIS_CM = 2.0f;
 };

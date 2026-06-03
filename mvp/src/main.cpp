@@ -47,13 +47,13 @@ int main()
 
     while (true)
     {
-        if (gpio_get(SWITCH_PIN))
-        {
-            servo.update();
-            leds.update();
-            sleep_ms(20);
-            continue;
-        }
+        // if (gpio_get(SWITCH_PIN))
+        // {
+        //     servo.update();
+        //     leds.update();
+        //     sleep_ms(20);
+        //     continue;
+        // }
 
         uint16_t light = lightSensor.read();
 

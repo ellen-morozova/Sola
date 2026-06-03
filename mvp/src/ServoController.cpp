@@ -24,11 +24,9 @@ void ServoController::init(unsigned pin)
 
 void ServoController::setTarget(float angle)
 {
-    if(angle < 0.0f)
-        angle = 0.0f;
-
-    if(angle > 45.0f)
-        angle = 45.0f;
+    if(angle < 22.5f) angle = 0.0f;
+    else if(angle > 45.0f) angle = 45.0f;
+    else angle = (angle - 22.5f) * 2;
 
     targetAngle_ = angle;
 }

@@ -17,7 +17,8 @@ void UltrasonicSensor::init()
 
     ready_ = false;
     error_ = false;
-    distance_ = -1.0f;
+    distance_ = 1.0f;
+    gestureLatched_ = false;
 }
 
 void UltrasonicSensor::update()
@@ -37,7 +38,7 @@ void UltrasonicSensor::update()
         if (time_us_32() - start_wait > 30000)
         {
             error_ = true;
-            distance_ = -1.0f;
+            distance_ = 1.0f;
             ready_ = true;
             return;
         }
@@ -50,7 +51,7 @@ void UltrasonicSensor::update()
         if (time_us_32() - echo_start > 30000)
         {
             error_ = true;
-            distance_ = -1.0f;
+            distance_ = 1.0f;
             ready_ = true;
             return;
         }
@@ -81,17 +82,39 @@ bool UltrasonicSensor::hasError() const
 
 bool UltrasonicSensor::gestureDetected(float thresholdCm)
 {
-    if (!ready_ || error_)
+    if (!ready_)
+        return false;
+
+    if (error_)
         return false;
 
     uint32_t now = to_ms_since_boot(get_absolute_time());
 
-    if (distance_ > thresholdCm)
+    const float enterThreshold = thresholdCm;
+    const float exitThreshold = thresholdCm + HYSTERESIS_CM;
+
+    if (gestureLatched_)
+    {
+        if (distance_ >= exitThreshold)
+        {
+            gestureLatched_ = false;
+        }
+
         return false;
+    }
+
+    if (distance_ > enterThreshold)
+    {
+        return false;
+    }
 
     if (now - lastGestureTime_ < GESTURE_COOLDOWN_MS)
+    {
         return false;
+    }
 
+    gestureLatched_ = true;
     lastGestureTime_ = now;
+
     return true;
 }
